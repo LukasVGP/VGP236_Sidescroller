@@ -1,52 +1,85 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+/// <summary>
+/// A simple script for 2D side-scrolling player movement.
+/// Controls: 'A' and 'D' for horizontal movement, 'Space' for jumping.
+/// </summary>
+public class SimplePlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D playerRB;
-    private float moveSpeed = 5f;
-    private float jumpSpeed = 10f;
-    private int maxJumps = 1;
-    private int numJumps;
+    // Public variables to control player speed and jump force.
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float jumpForce = 10f;
 
-    private Vector2 moveInput;
+    // A reference to the Rigidbody2D component.
+    private Rigidbody2D rb;
 
+    // A private bool to track if the player is currently touching the ground.
+    private bool isGrounded;
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
     private void Awake()
     {
-        playerRB = GetComponent<Rigidbody2D>();
+        // Get the Rigidbody2D component attached to this GameObject.
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnEnable()
+    /// <summary>
+    /// Update is called once per frame to handle input.
+    /// </summary>
+    private void Update()
     {
-        // This is where you would enable input actions if not using PlayerInput component
-    }
-
-    private void OnDisable()
-    {
-        // This is where you would disable input actions if not using PlayerInput component
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (numJumps < maxJumps)
+        // Check for 'Space' key press, but only if the player is on the ground.
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            playerRB.linearVelocity = new Vector2(playerRB.linearVelocity.x, jumpSpeed);
-            numJumps++;
+            Jump();
         }
     }
 
+    /// <summary>
+    /// FixedUpdate is called at a fixed interval for physics calculations.
+    /// </summary>
     private void FixedUpdate()
     {
-        playerRB.linearVelocity = new Vector2(moveInput.x * moveSpeed, playerRB.linearVelocity.y);
+        // Get the value of the horizontal input axis.
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        // Apply velocity to the Rigidbody for horizontal movement.
+        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
     }
 
+    /// <summary>
+    /// Applies an upward force to the player to make them jump.
+    /// </summary>
+    private void Jump()
+    {
+        // Apply an upward velocity directly to the Rigidbody.
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+    }
+
+    /// <summary>
+    /// Called when the ground-checking collider enters a trigger.
+    /// </summary>
     private void OnTriggerEnter2D(Collider2D other)
     {
-        numJumps = 0;
+        // Check if the collider entering the trigger is on the "Ground" layer.
+        // We use LayerMask.NameToLayer("Ground") to get the layer number.
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    /// <summary>
+    /// Called when the ground-checking collider exits a trigger.
+    /// </summary>
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        // Check if the collider leaving the trigger is on the "Ground" layer.
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            isGrounded = false;
+        }
     }
 }
