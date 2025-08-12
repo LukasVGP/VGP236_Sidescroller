@@ -1,33 +1,18 @@
 using UnityEngine;
 
+/// <summary>
+/// This script is attached to the bullet prefab. It ensures the bullet
+/// has a Rigidbody2D and destroys itself after a set time.
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))] // Automatically adds a Rigidbody2D if not present
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float lifetime = 3f;
+    // The amount of time in seconds before the bullet is destroyed.
+    [SerializeField] private float lifetime = 2f;
 
-    private float currentLifetime;
-    private Rigidbody2D rb;
-
-    private void Awake()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-    }
-
-    private void Update()
-    {
-        currentLifetime -= Time.deltaTime;
-        if (currentLifetime <= 0)
-        {
-            gameObject.SetActive(false);
-        }
-    }
-
-    public void Spawn(Vector3 position, Quaternion rotation)
-    {
-        transform.position = position;
-        transform.rotation = rotation;
-        rb.linearVelocity = transform.right * speed;
-        currentLifetime = lifetime;
-        gameObject.SetActive(true);
+        // Destroy the bullet's GameObject after the specified lifetime.
+        Destroy(gameObject, lifetime);
     }
 }
