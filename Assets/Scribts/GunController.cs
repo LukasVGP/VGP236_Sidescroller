@@ -16,38 +16,52 @@ public class GunController : MonoBehaviour
     [SerializeField] private float recoilDistance = 0.2f;
     [SerializeField] private float recoilDuration = 0.05f;
 
+    // Cooldown variables
+    [SerializeField] private float fireRate = 0.3f;
+    private float nextFireTime;
+
     private AudioSource audioSource;
 
     private void Awake()
     {
+        // Get or add an AudioSource component if one is not present.
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
-            // Debug log to confirm if the AudioSource component is missing
-            Debug.LogWarning("AudioSource component not found on the gun GameObject. No sound will be played.");
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
         }
     }
 
     /// <summary>
     /// This is the public method to fire the gun.
-    /// It performs all the shooting actions.
+    /// It performs all the shooting actions, respecting the cooldown.
     /// </summary>
     public void Fire()
     {
-        // 1. Play the shooting sound effect.
+        // Check if the gun is on cooldown. If Time.time is less than nextFireTime, return.
+        if (Time.time < nextFireTime)
+        {
+            return;
+        }
+
+        // 1. Set the time for the next shot.
+        nextFireTime = Time.time + fireRate;
+
+        // 2. Play the shooting sound effect.
         if (audioSource != null && shootSound != null)
         {
             audioSource.PlayOneShot(shootSound);
         }
 
-        // 2. Spawn the muzzle flash effect at the projectile spawn point.
+        // 3. Spawn the muzzle flash effect.
         if (muzzleFlashPrefab != null && projectileSpawnPoint != null)
         {
             GameObject flash = Instantiate(muzzleFlashPrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation, projectileSpawnPoint);
             Destroy(flash, 0.1f);
         }
 
-        // 3. Spawn the bullet and apply a forward force.
+        // 4. Spawn the bullet and set its velocity.
         if (bulletPrefab != null && projectileSpawnPoint != null)
         {
             GameObject bullet = Instantiate(bulletPrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
@@ -55,15 +69,8 @@ public class GunController : MonoBehaviour
 
             if (rb != null)
             {
-                // Verify the projectile force is greater than zero
-                if (projectileForce <= 0)
-                {
-                    Debug.LogWarning("Projectile Force is 0 or less. Bullet will not move.");
-                    return; // Exit the function if force is zero
-                }
-
-                // Apply a force in the direction the spawn point is facing.
-                rb.AddForce(projectileSpawnPoint.right * projectileForce, ForceMode2D.Impulse);
+                // Directly set the bullet's velocity.
+                rb.linearVelocity = projectileSpawnPoint.right * projectileForce;
             }
             else
             {
@@ -71,7 +78,7 @@ public class GunController : MonoBehaviour
             }
         }
 
-        // 4. Trigger the visual recoil animation on the barrel.
+        // 5. Trigger the visual recoil animation on the barrel.
         Recoil();
     }
 

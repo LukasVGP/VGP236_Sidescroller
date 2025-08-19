@@ -688,15 +688,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ef8327fc2152f43a2fcf09eeb4b439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
-  projectileSpawnPoint: {fileID: 0}
-  barrelTransform: {fileID: 0}
-  muzzleFlashPrefab: {fileID: 0}
-  shootSound: {fileID: 0}
-  projectileForce: 20
-  recoilDistance: 0.2
-  recoilDuration: 0.05
-  audioSource: {fileID: 0}
 --- !u!114 &860757511
 MonoBehaviour:
   m_ObjectHideFlags: 0
