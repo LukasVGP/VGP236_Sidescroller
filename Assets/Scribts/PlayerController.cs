@@ -5,7 +5,7 @@ using UnityEngine;
 /// Controls: 'A' and 'D' for horizontal movement, 'Space' for jumping.
 /// Now includes firing with the Left Mouse Button.
 /// </summary>
-public class SimplePlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     // Existing variables for movement.
     [SerializeField] private float moveSpeed = 5f;
