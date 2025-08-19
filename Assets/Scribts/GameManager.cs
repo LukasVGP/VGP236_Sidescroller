@@ -112,18 +112,22 @@ public class GameManager : MonoBehaviour
         AddPoints(points);
     }
 
+    // Level Transition
+    public void LoadNextLevel(string levelName)
+    {
+        SceneManager.LoadScene(levelName);
+    }
+
     // Win/Lose Conditions
     public void WinGame()
     {
         Debug.Log("You Win!");
-        // Pause game, show win screen, etc.
         // You would typically load a new scene or show a UI panel here.
     }
 
     public void LoseGame()
     {
         Debug.Log("Game Over!");
-        // Pause game, show lose screen, etc.
         // You would typically load a new scene or show a UI panel here.
     }
 }
