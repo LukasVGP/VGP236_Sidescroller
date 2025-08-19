@@ -14,7 +14,7 @@ public class SimplePlayerMovement : MonoBehaviour
     private bool isGrounded;
     private float horizontalInput;
 
-    // New: A reference to the gun controller script.
+    // A reference to the gun controller script.
     [SerializeField] private GunController gunController;
 
     private void Awake()
@@ -31,7 +31,8 @@ public class SimplePlayerMovement : MonoBehaviour
             Jump();
         }
 
-        // New: Check for Left Mouse Button click to fire.
+        // Check for Left Mouse Button click to fire.
+        // The isGrounded check has been removed.
         if (Input.GetMouseButtonDown(0))
         {
             if (gunController != null)
