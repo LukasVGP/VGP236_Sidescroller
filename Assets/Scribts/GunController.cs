@@ -39,29 +39,29 @@ public class GunController : MonoBehaviour
     /// </summary>
     public void Fire()
     {
-        // Check if the gun is on cooldown. If Time.time is less than nextFireTime, return.
+        // Check if the gun is on cooldown.
         if (Time.time < nextFireTime)
         {
             return;
         }
 
-        // 1. Set the time for the next shot.
+        // Set the time for the next shot.
         nextFireTime = Time.time + fireRate;
 
-        // 2. Play the shooting sound effect.
+        // Play the shooting sound effect.
         if (audioSource != null && shootSound != null)
         {
             audioSource.PlayOneShot(shootSound);
         }
 
-        // 3. Spawn the muzzle flash effect.
+        // Spawn the muzzle flash effect.
         if (muzzleFlashPrefab != null && projectileSpawnPoint != null)
         {
             GameObject flash = Instantiate(muzzleFlashPrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation, projectileSpawnPoint);
             Destroy(flash, 0.1f);
         }
 
-        // 4. Spawn the bullet and set its velocity.
+        // Spawn the bullet and set its velocity.
         if (bulletPrefab != null && projectileSpawnPoint != null)
         {
             GameObject bullet = Instantiate(bulletPrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
@@ -78,7 +78,7 @@ public class GunController : MonoBehaviour
             }
         }
 
-        // 5. Trigger the visual recoil animation on the barrel.
+        // Trigger the visual recoil animation on the barrel.
         Recoil();
     }
 
